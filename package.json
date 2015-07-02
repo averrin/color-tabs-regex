@@ -1,10 +1,9 @@
 {
   "name": "color-tabs-regex",
   "main": "./lib/color-tabs-regex",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Use color-tabs package with regex",
-  "keywords": [
-  ],
+  "keywords": [],
   "repository": "https://github.com/averrin/color-tabs-regex",
   "license": "MIT",
   "engines": {
