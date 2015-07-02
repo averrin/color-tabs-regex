@@ -9,34 +9,30 @@ module.exports = ColorTabsRegex =
   subscriptions: null
 
   activate: (state) ->
-    console.log 'activate color-tabs-regex'
-    @subscriptions = new CompositeDisposable
-
-    @subscriptions.add atom.commands.add 'atom-workspace', 'color-tabs-regex:toggle': => @processAllTabs()
+    console.log '[color-tabs-regex] activate'
     unless @disposables?
       @disposables = new CompositeDisposable
       @disposables.add atom.workspace.onDidAddTextEditor =>
         setTimeout @processAllTabs, 10
       @disposables.add atom.workspace.onDidDestroyPaneItem =>
         setTimeout @processAllTabs, 10
+      @disposables.add atom.commands.add 'atom-workspace', 'color-tabs-regex:reload': => @reloadConfig()
+    @reloadConfig()
+
+  reloadConfig: () ->
+    console.log "[color-tabs-regex] read #{colorFile}"
     CSON.readFile colorFile, (err, content) =>
       unless err
         colors = content
         @processed = @processAllTabs()
-    console.log colors
 
   deactivate: ->
-    @modalPanel.destroy()
     @subscriptions.dispose()
-    @colorTabsRegexView.destroy()
-
-  serialize: ->
-    colorTabsRegexViewState: @colorTabsRegexView.serialize()
 
   consumeChangeColor: (changeColor) =>
     @changeColor = changeColor
 
-  processAllTabs: ()=>
+  processAllTabs: () =>
     paneItems = atom.workspace.getPaneItems()
     for paneItem in paneItems
       if paneItem.getPath?
@@ -44,9 +40,5 @@ module.exports = ColorTabsRegex =
         for re of colors
           if path.match re
             color = colors[re]
-            console.log "#{path} -> #{color}"
+            console.log "[color-tabs-regex] #{path} -> #{color} matched by '#{re}'"
             @changeColor path, color
-
-  # toggle: ->
-  #   console.log 'ColorTabsRegex was toggled!'
-  #   @processAllTabs()
