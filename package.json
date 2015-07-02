@@ -1,0 +1,23 @@
+{
+  "name": "color-tabs-regex",
+  "main": "./lib/color-tabs-regex",
+  "version": "0.0.1",
+  "description": "Use color-tabs package with regex",
+  "keywords": [
+  ],
+  "repository": "https://github.com/averrin/color-tabs-regex",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "dependencies": {
+    "season": "^5.3.0"
+  },
+  "consumedServices": {
+    "change-color": {
+      "versions": {
+        "^0.0.1": "consumeChangeColor"
+      }
+    }
+  }
+}
