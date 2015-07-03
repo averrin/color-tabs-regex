@@ -2,11 +2,9 @@
 CSON = require 'season'
 colorFile = atom.getConfigDirPath()+"/color-tabs-regex.cson"
 colors = {}
+processPath = null
 
 module.exports = ColorTabsRegex =
-  colorTabsRegexView: null
-  modalPanel: null
-  subscriptions: null
 
   activate: (state) ->
     console.log '[color-tabs-regex] activate'
@@ -16,29 +14,40 @@ module.exports = ColorTabsRegex =
         setTimeout @processAllTabs, 10
       @disposables.add atom.workspace.onDidDestroyPaneItem =>
         setTimeout @processAllTabs, 10
-      @disposables.add atom.commands.add 'atom-workspace', 'color-tabs-regex:reload': => @reloadConfig()
-    @reloadConfig()
+      @disposables.add atom.commands.add 'atom-workspace', 'color-tabs-regex:edit-rules': => @editRules()
+      cb = @processAllTabs
+      atom.workspace.observeTextEditors (editor) =>
+        if editor.getPath() == colorFile
+          @addSaveCb(editor, cb)
+    @processAllTabs()
 
-  reloadConfig: () ->
-    console.log "[color-tabs-regex] read #{colorFile}"
+  addSaveCb: (editor, cb)->
+    @disposables.add editor.onDidSave =>
+      setTimeout cb, 10
+
+  editRules: () ->
+    atom.open pathsToOpen: colorFile
+    atom.workspace.observeTextEditors (editor) =>
+      if editor.getPath() == colorFile
+        @addSaveCb(editor, @processAllTabs)
+
+  deactivate: ->
+    @disposables.dispose()
+
+  consumeChangeColor: (changeColor) ->
+    processPath = changeColor
+
+  processAllTabs: () ->
     CSON.readFile colorFile, (err, content) =>
       unless err
         colors = content
-        @processed = @processAllTabs()
-
-  deactivate: ->
-    @subscriptions.dispose()
-
-  consumeChangeColor: (changeColor) =>
-    @changeColor = changeColor
-
-  processAllTabs: () =>
-    paneItems = atom.workspace.getPaneItems()
-    for paneItem in paneItems
-      if paneItem.getPath?
-        path = paneItem.getPath()
-        for re of colors
-          if path.match re
-            color = colors[re]
-            console.log "[color-tabs-regex] #{path} -> #{color} matched by '#{re}'"
-            @changeColor path, color
+        paneItems = atom.workspace.getPaneItems()
+        for paneItem in paneItems
+          if paneItem.getPath?
+            path = paneItem.getPath()
+            if path
+              for re of colors
+                if path.match re
+                  color = colors[re]
+                  console.log "[color-tabs-regex] #{path} -> #{color} matched by '#{re}'"
+                  processPath path, color
