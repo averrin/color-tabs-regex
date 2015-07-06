@@ -70,11 +70,9 @@ module.exports = ColorTabsRegex =
             if path
               for re of colors
                 try
-                  console.log path, re, matchers[matcher](path, re)
                   if matchers[matcher] path, re
                     color = colors[re]
                     if breaks
-                      console.log path, colored.indexOf(path) == -1
                       if colored.indexOf(path) == -1
                         colored.push path
                       else
