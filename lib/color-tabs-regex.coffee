@@ -9,7 +9,7 @@ module.exports = ColorTabsRegex =
   config:
     breakAfterFirstMatch:
       type: 'boolean'
-      default: true
+      default: false
 
   activate: (state) ->
     console.log '[color-tabs-regex] activate'
