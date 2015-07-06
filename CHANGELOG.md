@@ -12,3 +12,6 @@
 
 ## 0.1.5
 * Fix #3 - add Break on first match checkbox
+
+## 0.1.6
+* Fix #4 - add minimatch regex engine

@@ -4,12 +4,24 @@ colorFile = atom.getConfigDirPath()+"/color-tabs-regex.cson"
 colors = {}
 processPath = null
 
+minimatch = require 'minimatch'
+matchers =
+  minimatch: (path, regex) ->
+    return minimatch path, regex
+  'String.match': (path, regex) ->
+    return path.match regex
+
 module.exports = ColorTabsRegex =
 
   config:
     breakAfterFirstMatch:
       type: 'boolean'
       default: false
+    regexEngine:
+      title: "Regex engine"
+      type: "string"
+      default: "minimatch"
+      enum: ["minimatch", "String.match"]
 
   activate: (state) ->
     console.log '[color-tabs-regex] activate'
@@ -21,6 +33,7 @@ module.exports = ColorTabsRegex =
         setTimeout @processAllTabs, 10
       @disposables.add atom.commands.add 'atom-workspace', 'color-tabs-regex:edit-rules': => @editRules()
       @disposables.add atom.config.observe "color-tabs-regex.breakAfterFirstMatch", @processAllTabs
+      @disposables.add atom.config.observe "color-tabs-regex.regexEngine", @processAllTabs
       cb = @processAllTabs
       atom.workspace.observeTextEditors (editor) =>
         if editor.getPath() == colorFile
@@ -45,6 +58,7 @@ module.exports = ColorTabsRegex =
 
   processAllTabs: () ->
     breaks = atom.config.get "color-tabs-regex.breakAfterFirstMatch"
+    matcher = atom.config.get "color-tabs-regex.regexEngine"
     colored = []
     CSON.readFile colorFile, (err, content) =>
       unless err
@@ -56,7 +70,8 @@ module.exports = ColorTabsRegex =
             if path
               for re of colors
                 try
-                  if path.match re
+                  console.log path, re, matchers[matcher](path, re)
+                  if matchers[matcher] path, re
                     color = colors[re]
                     if breaks
                       console.log path, colored.indexOf(path) == -1
@@ -65,7 +80,7 @@ module.exports = ColorTabsRegex =
                       else
                         continue
                     console.log "[color-tabs-regex] #{path} -> #{color} matched by '#{re}'"
-                    processPath path, color
+                    processPath path, color, false
 
                 catch error
-                  console.log "[color-tabs-regex] #{error}"
+                  console.error "[color-tabs-regex] #{error}"
