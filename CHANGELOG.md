@@ -1,2 +1,11 @@
 ## 0.1.0 - First Release
 * Initial Release
+
+## 0.1.1
+* Bug fixes and commands
+
+## 0.1.2
+* "Edit Rules"
+
+## 0.1.3
+* Fix #2

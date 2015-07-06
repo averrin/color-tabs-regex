@@ -21,7 +21,7 @@ module.exports = ColorTabsRegex =
           @addSaveCb(editor, cb)
     @processAllTabs()
 
-  addSaveCb: (editor, cb)->
+  addSaveCb: (editor, cb) ->
     @disposables.add editor.onDidSave =>
       setTimeout cb, 10
 
@@ -47,7 +47,11 @@ module.exports = ColorTabsRegex =
             path = paneItem.getPath()
             if path
               for re of colors
-                if path.match re
-                  color = colors[re]
-                  console.log "[color-tabs-regex] #{path} -> #{color} matched by '#{re}'"
-                  processPath path, color
+                try
+                  if path.match re
+                    color = colors[re]
+                    console.log "[color-tabs-regex] #{path} -> #{color} matched by '#{re}'"
+                    processPath path, color
+                    
+                catch error
+                  console.log "[color-tabs-regex] #{error}"

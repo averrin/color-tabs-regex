@@ -2,9 +2,9 @@
 
 Use color-tabs package with regex.
 
-This package use [color-tabs](https://github.com/paulpflug/color-tabs) services.
+This package use [color-tabs](https://github.com/paulpflug/color-tabs) services, and [String.match](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match) for tabs coloring.
 
-Just edit ~/.atom/color-tabs-regex.cson like
+Just edit ~/.atom/color-tabs-regex.cson (you can open it by "Color Tabs Regex: Edit Rules" command) like
 
 `
 "regex": "#color"
