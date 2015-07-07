@@ -13,7 +13,7 @@ Just edit ~/.atom/color-tabs-regex.cson (you can open it by "Color Tabs Regex: E
 ## Settings
 
 * On settings page you can toggle "Break on first match" behavior.
-* Select regex engine: String.match (default) or [minimatch](https://github.com/isaacs/minimatch)
+* Select regex engine: String.match or [minimatch](https://github.com/isaacs/minimatch) (default)
 
 ## Screenshots
 

@@ -1,10 +1,13 @@
 {CompositeDisposable} = require 'atom'
 CSON = require 'season'
-colorFile = atom.getConfigDirPath()+"/color-tabs-regex.cson"
+sep = require("path").sep
+colorFile = atom.getConfigDirPath()+"#{sep}color-tabs-regex.cson"
 colors = {}
 processPath = null
 
 minimatch = require 'minimatch'
+
+# you can add your matchers
 matchers =
   minimatch: (path, regex) ->
     return minimatch path, regex
@@ -21,10 +24,10 @@ module.exports = ColorTabsRegex =
       title: "Regex engine"
       type: "string"
       default: "minimatch"
-      enum: ["minimatch", "String.match"]
+      enum: Object.keys matchers
 
   activate: (state) ->
-    console.log '[color-tabs-regex] activate'
+    console.log "[color-tabs-regex] activate."
     unless @disposables?
       @disposables = new CompositeDisposable
       @disposables.add atom.workspace.onDidAddTextEditor =>
@@ -62,6 +65,9 @@ module.exports = ColorTabsRegex =
     colored = []
     CSON.readFile colorFile, (err, content) =>
       unless err
+        count = Object.keys(content).length
+        if Object.keys(colors).length != count
+          console.log "[color-tabs-regex] defined rules: #{count}"
         colors = content
         paneItems = atom.workspace.getPaneItems()
         for paneItem in paneItems
