@@ -18,3 +18,9 @@
 
 ## 0.1.9
 * Fix #5 - add "child" rules
+
+## 0.2.0
+* Bugfixes
+
+## 0.2.1
+* Add menu

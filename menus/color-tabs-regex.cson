@@ -1,0 +1,14 @@
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'Color Tabs Regex'
+      'submenu': [
+        {
+          'label': 'Edit Rules'
+          'command': 'color-tabs-regex:edit-rules'
+        }
+      ]
+    ]
+  }
+]
