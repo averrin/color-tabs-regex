@@ -30,14 +30,14 @@ module.exports = ColorTabsRegex =
     console.log "[color-tabs-regex] activate."
     unless @disposables?
       @disposables = new CompositeDisposable
+      cb = @processAllTabs.bind(this)
       @disposables.add atom.workspace.onDidAddTextEditor =>
-        setTimeout @processAllTabs, 10
+        setTimeout cb, 10
       @disposables.add atom.workspace.onDidDestroyPaneItem =>
-        setTimeout @processAllTabs, 10
-      @disposables.add atom.commands.add 'atom-workspace', 'color-tabs-regex:edit-rules': => @editRules()
-      @disposables.add atom.config.observe "color-tabs-regex.breakAfterFirstMatch", @processAllTabs
-      @disposables.add atom.config.observe "color-tabs-regex.regexEngine", @processAllTabs
-      cb = @processAllTabs
+        setTimeout cb, 10
+      @disposables.add atom.commands.add 'atom-workspace', 'color-tabs-regex:edit-rules': => @editRules(cb)
+      @disposables.add atom.config.observe "color-tabs-regex.breakAfterFirstMatch", cb
+      @disposables.add atom.config.observe "color-tabs-regex.regexEngine", cb
       atom.workspace.observeTextEditors (editor) =>
         if editor.getPath() == colorFile
           @addSaveCb(editor, cb)
@@ -47,11 +47,11 @@ module.exports = ColorTabsRegex =
     @disposables.add editor.onDidSave =>
       setTimeout cb, 10
 
-  editRules: () ->
+  editRules: (cb) ->
     atom.open pathsToOpen: colorFile
     atom.workspace.observeTextEditors (editor) =>
       if editor.getPath() == colorFile
-        @addSaveCb(editor, @processAllTabs)
+        @addSaveCb(editor, cb)
 
   deactivate: ->
     @disposables.dispose()
@@ -72,10 +72,11 @@ module.exports = ColorTabsRegex =
   processAllTabs: () ->
     breaks = atom.config.get "color-tabs-regex.breakAfterFirstMatch"
     matcher = atom.config.get "color-tabs-regex.regexEngine"
+    processRules = @expandRules.bind(this)
     colored = []
     CSON.readFile colorFile, (err, content) =>
       unless err
-        rules = @expandRules content
+        rules = processRules content
         count = Object.keys(rules).length
         if Object.keys(colors).length != count
           console.log "[color-tabs-regex] defined rules: #{count}"
@@ -84,6 +85,7 @@ module.exports = ColorTabsRegex =
         for paneItem in paneItems
           if paneItem.getPath?
             path = paneItem.getPath()
+            processPath path, false, false
             if path
               for re of colors
                 try
