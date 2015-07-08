@@ -41,7 +41,6 @@ module.exports = ColorTabsRegex =
       atom.workspace.observeTextEditors (editor) =>
         if editor.getPath() == colorFile
           @addSaveCb(editor, cb)
-    @processAllTabs()
 
   addSaveCb: (editor, cb) ->
     @disposables.add editor.onDidSave =>
@@ -66,7 +65,7 @@ module.exports = ColorTabsRegex =
       if typeof rules[rule] is "string"
         output[prefix + rule] = rules[rule]
       else
-        output = @expandRules(rules[rule], rule, output)
+        output = @expandRules(rules[rule], prefix + rule, output)
     output
 
   processAllTabs: () ->
@@ -101,3 +100,5 @@ module.exports = ColorTabsRegex =
 
                 catch error
                   console.error "[color-tabs-regex] #{error}"
+      else
+        console.error err
