@@ -8,7 +8,11 @@ Just edit ~/.atom/color-tabs-regex.cson (you can open it by "Color Tabs Regex: E
 
 `
 "regex": "#color"
+"prefix":
+  "regex": "#anothercolor"
 `
+
+When using prefixes, the prefix and the regex are concatenated (e.g. if the prefix is `"foo/"` and the regex is `"bar"`, it will check for matches with `"foo/bar"`)
 
 ## Settings
 

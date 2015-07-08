@@ -59,16 +59,27 @@ module.exports = ColorTabsRegex =
   consumeChangeColor: (changeColor) ->
     processPath = changeColor
 
+  expandRules: (rules, prefix, output) ->
+    output = output || []
+    prefix = prefix || ""
+    for rule of rules
+      if typeof rules[rule] is "string"
+        output[prefix + rule] = rules[rule]
+      else
+        output = @expandRules(rules[rule], rule, output)
+    output
+
   processAllTabs: () ->
     breaks = atom.config.get "color-tabs-regex.breakAfterFirstMatch"
     matcher = atom.config.get "color-tabs-regex.regexEngine"
     colored = []
     CSON.readFile colorFile, (err, content) =>
       unless err
-        count = Object.keys(content).length
+        rules = @expandRules content
+        count = Object.keys(rules).length
         if Object.keys(colors).length != count
           console.log "[color-tabs-regex] defined rules: #{count}"
-        colors = content
+        colors = rules
         paneItems = atom.workspace.getPaneItems()
         for paneItem in paneItems
           if paneItem.getPath?

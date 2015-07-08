@@ -15,3 +15,6 @@
 
 ## 0.1.6
 * Fix #4 - add minimatch regex engine
+
+## 0.1.9
+* Fix #5 - add "child" rules
