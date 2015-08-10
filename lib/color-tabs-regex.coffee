@@ -6,11 +6,11 @@ colors = {}
 processPath = null
 
 minimatch = require 'minimatch'
-
+minimatchOptions = { matchBase: true }
 # you can add your matchers
 matchers =
   minimatch: (path, regex) ->
-    return minimatch path, regex
+    return minimatch path, regex, minimatchOptions
   'String.match': (path, regex) ->
     return path.match regex
 
