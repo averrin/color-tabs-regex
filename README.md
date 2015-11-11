@@ -23,3 +23,19 @@ When using prefixes, the prefix and the regex are concatenated (e.g. if the pref
 
 ![settings](https://cloud.githubusercontent.com/assets/426007/8528492/f276ad2c-241b-11e5-8a72-7102cadef775.png)
 ![tabs](https://cloud.githubusercontent.com/assets/426007/8528501/f45f3a50-241b-11e5-8a93-9ebf27e33429.png)
+
+## Example
+
+```cson
+"color-tabs":
+  "-regex/":
+    ".*": "rgb(75, 99, 0)"
+  "/lib" : "rgb(142, 65, 23)"
+"opened-files/":
+  ".*?\\.coffee": "rgb(134, 90, 16)"
+
+".*\\.py": "rgb(81, 201, 38)"
+".json": "rgb(196, 189, 91)"
+".cson": "rgb(196, 189, 91)"
+".xml": "rgb(196, 189, 91)"
+```
