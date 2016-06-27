@@ -31,6 +31,8 @@ module.exports = ColorTabsRegex =
     unless @disposables?
       @disposables = new CompositeDisposable
       cb = @processAllTabs.bind(this)
+      @disposables.add atom.workspace.onDidChangeActivePane =>
+        setTimeout cb, 10
       @disposables.add atom.workspace.onDidAddTextEditor =>
         setTimeout cb, 10
       @disposables.add atom.workspace.onDidDestroyPaneItem =>
