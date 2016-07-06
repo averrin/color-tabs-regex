@@ -74,7 +74,6 @@ module.exports = ColorTabsRegex =
     breaks = atom.config.get "color-tabs-regex.breakAfterFirstMatch"
     matcher = atom.config.get "color-tabs-regex.regexEngine"
     processRules = @expandRules.bind(this)
-    colored = []
     CSON.readFile colorFile, (err, content) =>
       unless err
         rules = processRules content
@@ -92,13 +91,9 @@ module.exports = ColorTabsRegex =
                 try
                   if matchers[matcher] path, re
                     color = colors[re]
-                    if breaks
-                      if colored.indexOf(path) == -1
-                        colored.push path
-                      else
-                        continue
                     console.log "[color-tabs-regex] #{path} -> #{color} matched by '#{re}'"
                     processPath path, color, false
+                    break if breaks
 
                 catch error
                   console.error "[color-tabs-regex] #{error}"
